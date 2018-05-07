@@ -1,2 +1,4 @@
-# Postman And RESTful API
-Materials for Postman and RESTful API Seminar
+# Seminar about Postman And RESTful API
+RESTful API introduction
+
+Postman introduction
