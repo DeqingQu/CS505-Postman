@@ -1,0 +1,759 @@
+{
+	"info": {
+		"_postman_id": "b6c93fc1-ec2c-4728-a16c-9453e7279524",
+		"name": "CS505 RESTful API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Test Suite",
+			"description": "",
+			"item": [
+				{
+					"name": "Get All Gists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b02d421c-91cf-4557-993e-92fa09a4912e",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"responseJson = JSON.parse(responseBody);",
+									"pm.globals.set(\"num_of_gists\", responseJson.length);"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "d31e0e29df6dc7b51ff80930afe794d13cb3fcfd",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "bearer",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "callBackUrl",
+									"type": "any"
+								},
+								{
+									"key": "authUrl",
+									"type": "any"
+								},
+								{
+									"key": "accessTokenUrl",
+									"type": "any"
+								},
+								{
+									"key": "clientId",
+									"type": "any"
+								},
+								{
+									"key": "clientSecret",
+									"type": "any"
+								},
+								{
+									"key": "clientAuth",
+									"type": "any"
+								},
+								{
+									"key": "grantType",
+									"type": "any"
+								},
+								{
+									"key": "scope",
+									"type": "any"
+								},
+								{
+									"key": "username",
+									"type": "any"
+								},
+								{
+									"key": "password",
+									"type": "any"
+								},
+								{
+									"key": "redirectUri",
+									"type": "any"
+								},
+								{
+									"key": "refreshToken",
+									"type": "any"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "https://api.github.com/gists",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"gists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a Gist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ef554c54-5070-4dac-ae9f-0d20f708e950",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Post success\"] = responseCode.code === 201;",
+									"",
+									"tests[\"Has Content\"] = responseBody.has(\"Your content\");",
+									"",
+									"responseJson = JSON.parse(responseBody);",
+									"pm.globals.set(\"gist_id\", responseJson.id);"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "d31e0e29df6dc7b51ff80930afe794d13cb3fcfd",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "bearer",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"type": "any"
+								},
+								{
+									"key": "callBackUrl",
+									"type": "any"
+								},
+								{
+									"key": "authUrl",
+									"type": "any"
+								},
+								{
+									"key": "accessTokenUrl",
+									"type": "any"
+								},
+								{
+									"key": "clientId",
+									"type": "any"
+								},
+								{
+									"key": "clientSecret",
+									"type": "any"
+								},
+								{
+									"key": "clientAuth",
+									"type": "any"
+								},
+								{
+									"key": "grantType",
+									"type": "any"
+								},
+								{
+									"key": "scope",
+									"type": "any"
+								},
+								{
+									"key": "username",
+									"type": "any"
+								},
+								{
+									"key": "password",
+									"type": "any"
+								},
+								{
+									"key": "redirectUri",
+									"type": "any"
+								},
+								{
+									"key": "refreshToken",
+									"type": "any"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"the description for this gist\",\n  \"public\": true,\n  \"files\": {\n    \"file1.txt\": {\n      \"content\": \"Your content\"\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "https://api.github.com/gists",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"gists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Gists (After creation)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8a34ac33-bc68-42a3-b8b9-f71b43ae9325",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"responseJson = JSON.parse(responseBody);",
+									"tests[\"Gists count Increased by 1\"] = responseJson.length === pm.globals.get(\"num_of_gists\") + 1;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "d31e0e29df6dc7b51ff80930afe794d13cb3fcfd",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "bearer",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "callBackUrl",
+									"type": "any"
+								},
+								{
+									"key": "authUrl",
+									"type": "any"
+								},
+								{
+									"key": "accessTokenUrl",
+									"type": "any"
+								},
+								{
+									"key": "clientId",
+									"type": "any"
+								},
+								{
+									"key": "clientSecret",
+									"type": "any"
+								},
+								{
+									"key": "clientAuth",
+									"type": "any"
+								},
+								{
+									"key": "grantType",
+									"type": "any"
+								},
+								{
+									"key": "scope",
+									"type": "any"
+								},
+								{
+									"key": "username",
+									"type": "any"
+								},
+								{
+									"key": "password",
+									"type": "any"
+								},
+								{
+									"key": "redirectUri",
+									"type": "any"
+								},
+								{
+									"key": "refreshToken",
+									"type": "any"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "https://api.github.com/gists",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"gists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit a Gist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "205a643f-f504-4827-b459-791dddf82a2c",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = pm.response.json();",
+									"tests[\"JSON Body matches string\"] = jsonData['files']['file1.txt']['content'] === \"Changed Context\""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "d31e0e29df6dc7b51ff80930afe794d13cb3fcfd",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "bearer",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "callBackUrl",
+									"type": "any"
+								},
+								{
+									"key": "authUrl",
+									"type": "any"
+								},
+								{
+									"key": "accessTokenUrl",
+									"type": "any"
+								},
+								{
+									"key": "clientId",
+									"type": "any"
+								},
+								{
+									"key": "clientSecret",
+									"type": "any"
+								},
+								{
+									"key": "clientAuth",
+									"type": "any"
+								},
+								{
+									"key": "grantType",
+									"type": "any"
+								},
+								{
+									"key": "scope",
+									"type": "any"
+								},
+								{
+									"key": "username",
+									"type": "any"
+								},
+								{
+									"key": "password",
+									"type": "any"
+								},
+								{
+									"key": "redirectUri",
+									"type": "any"
+								},
+								{
+									"key": "refreshToken",
+									"type": "any"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"files\": {\n    \"file1.txt\": {\n      \"content\": \"Changed Context\"\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "https://api.github.com/gists/{{gist_id}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"gists",
+								"{{gist_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get the Gist (After edit)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "662d3158-927e-4eba-843f-7ffd11badf9c",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"responseJson = JSON.parse(responseBody);",
+									"tests[\"JSON Body matches string\"] = responseJson['files']['file1.txt']['content'] === \"Changed Context\""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "d31e0e29df6dc7b51ff80930afe794d13cb3fcfd",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "bearer",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "callBackUrl",
+									"type": "any"
+								},
+								{
+									"key": "authUrl",
+									"type": "any"
+								},
+								{
+									"key": "accessTokenUrl",
+									"type": "any"
+								},
+								{
+									"key": "clientId",
+									"type": "any"
+								},
+								{
+									"key": "clientSecret",
+									"type": "any"
+								},
+								{
+									"key": "clientAuth",
+									"type": "any"
+								},
+								{
+									"key": "grantType",
+									"type": "any"
+								},
+								{
+									"key": "scope",
+									"type": "any"
+								},
+								{
+									"key": "username",
+									"type": "any"
+								},
+								{
+									"key": "password",
+									"type": "any"
+								},
+								{
+									"key": "redirectUri",
+									"type": "any"
+								},
+								{
+									"key": "refreshToken",
+									"type": "any"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "https://api.github.com/gists/{{gist_id}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"gists",
+								"{{gist_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Gist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d7e0b9d0-0f03-4fa8-8fb8-80572bafc8a3",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "d31e0e29df6dc7b51ff80930afe794d13cb3fcfd",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "bearer",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"type": "any"
+								},
+								{
+									"key": "callBackUrl",
+									"type": "any"
+								},
+								{
+									"key": "authUrl",
+									"type": "any"
+								},
+								{
+									"key": "accessTokenUrl",
+									"type": "any"
+								},
+								{
+									"key": "clientId",
+									"type": "any"
+								},
+								{
+									"key": "clientSecret",
+									"type": "any"
+								},
+								{
+									"key": "clientAuth",
+									"type": "any"
+								},
+								{
+									"key": "grantType",
+									"type": "any"
+								},
+								{
+									"key": "scope",
+									"type": "any"
+								},
+								{
+									"key": "username",
+									"type": "any"
+								},
+								{
+									"key": "password",
+									"type": "any"
+								},
+								{
+									"key": "redirectUri",
+									"type": "any"
+								},
+								{
+									"key": "refreshToken",
+									"type": "any"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "https://api.github.com/gists/{{gist_id}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"gists",
+								"{{gist_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get the Gist (After deletion)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b7165997-aceb-4c7b-a6f4-75d0cb8c2670",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;",
+									"",
+									"pm.globals.unset(\"gist_id\");"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "d31e0e29df6dc7b51ff80930afe794d13cb3fcfd",
+									"type": "string"
+								},
+								{
+									"key": "tokenType",
+									"value": "bearer",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "callBackUrl",
+									"type": "any"
+								},
+								{
+									"key": "authUrl",
+									"type": "any"
+								},
+								{
+									"key": "accessTokenUrl",
+									"type": "any"
+								},
+								{
+									"key": "clientId",
+									"type": "any"
+								},
+								{
+									"key": "clientSecret",
+									"type": "any"
+								},
+								{
+									"key": "clientAuth",
+									"type": "any"
+								},
+								{
+									"key": "grantType",
+									"type": "any"
+								},
+								{
+									"key": "scope",
+									"type": "any"
+								},
+								{
+									"key": "username",
+									"type": "any"
+								},
+								{
+									"key": "password",
+									"type": "any"
+								},
+								{
+									"key": "redirectUri",
+									"type": "any"
+								},
+								{
+									"key": "refreshToken",
+									"type": "any"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "https://api.github.com/gists/{{gist_id}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"gists",
+								"{{gist_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

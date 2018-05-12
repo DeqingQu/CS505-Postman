@@ -1,24 +1,72 @@
-//  test in new style
-pm.test("Status code is 200", function () {
-    pm.response.to.have.status(200);
-});
+//////////////////////////////////////////////////////
+//  1. Get all gists (GET : https://api.github.com/gists)
+//  test code
+tests["Status code is 200"] = responseCode.code === 200;
 
+responseJson = JSON.parse(responseBody);
+pm.globals.set("num_of_gists", responseJson.length);
 
-pm.test("Test id field in the response body", function () {
-    var jsonData = pm.response.json();
-    pm.expect(jsonData.id).not.to.eql(0);
-    pm.globals.set("gist_id", jsonData.id);
-});
+//////////////////////////////////////////////////////
+//  2. Create a new gist (POST : https://api.github.com/gists)
+//  body
+{
+  "description": "the description for this gist",
+  "public": true,
+  "files": {
+    "file1.txt": {
+      "content": "Your content"
+    }
+  }
+}
+//  test code
+tests["Post success"] = responseCode.code === 201;
 
-pm.test("Test the count of gists", function () {
-    var jsonData = pm.response.json();
-    var previous_gists_count = pm.globals.get("gists_count");
-    pm.expect(jsonData.length).to.eql(1+previous_gists_count);
-    pm.globals.set("gists_count", jsonData.length);
-});
+tests["Has Content"] = responseBody.has("Your content");
 
-//  test in old style
+responseJson = JSON.parse(responseBody);
+pm.globals.set("gist_id", responseJson.id);
+
+//////////////////////////////////////////////////////
+//  3. Get all lists (after creation) (GET : https://api.github.com/gists)
+//  test code
+tests["Status code is 200"] = responseCode.code === 200;
+
+responseJson = JSON.parse(responseBody);
+tests["Gists count Increased by 1"] = responseJson.length === pm.globals.get("num_of_gists") + 1;
+
+//////////////////////////////////////////////////////
+//  4. Edit a gist (PATCH : https://api.github.com/gists/{{gist_id}})
+//  body
+{
+  "files": {
+    "file1.txt": {
+      "content": "Changed Context"
+    }
+  }
+}
+
+//  test code
+tests["Status code is 200"] = responseCode.code === 200;
+
 var jsonData = pm.response.json();
-var previous_gists_count = pm.globals.get("gists_count");
-tests['Test the response body is an array'] = jsonData instanceof Array;
-tests['Test the count of gists'] = jsonData.length === previous_gists_count-1;
+tests["JSON Body matches string"] = jsonData['files']['file1.txt']['content'] === "Changed Context"
+
+//////////////////////////////////////////////////////
+//  5. Get a gist (GET : https://api.github.com/gists/{{gist_id}})
+//  test code
+tests["Status code is 200"] = responseCode.code === 200;
+
+responseJson = JSON.parse(responseBody);
+tests["JSON Body matches string"] = responseJson['files']['file1.txt']['content'] === "Changed Context"
+
+//////////////////////////////////////////////////////
+//  6. Delete the gist (DELETE : https://api.github.com/gists/{{gist_id}})
+//  test code
+tests["Status code is 204"] = responseCode.code === 204;
+
+//////////////////////////////////////////////////////
+//  7. Get the gist (GET : https://api.github.com/gists/{{gist_id}})
+//  test code
+tests["Status code is 404"] = responseCode.code === 404;
+
+pm.globals.unset("gist_id");
